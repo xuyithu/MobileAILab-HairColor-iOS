@@ -8,14 +8,17 @@ class ViewController: UIViewController {
     @IBOutlet weak var cameraPreview: CameraPreviewView!
     @IBOutlet weak var predictionView: UIImageView!
     
+    @IBOutlet weak var fps: UILabel!
     private var session: AVCaptureSession?
+    
     
     lazy var predictionRequest: VNCoreMLRequest = {
         // Load the ML model through its generated class and create a Vision request for it.
         do {
-            let model = try VNCoreMLModel(for: mu_224_050_best2().model)
-//            let request = VNCoreMLRequest(model: model, completionHandler: self.handlePrediction)
-            let request = VNCoreMLRequest(model: model)
+//            let model = try VNCoreMLModel(for: mu_224_050_best2().model)
+            let model = try VNCoreMLModel(for: sfm_graph().model)
+            let request = VNCoreMLRequest(model: model, completionHandler: self.handlePrediction)
+//            let request = VNCoreMLRequest(model: model)
             request.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop
             return request
         } catch {
@@ -25,7 +28,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        predictionView.transform = CGAffineTransform(scaleX: -1, y: 1)
+//        predictionView.transform = CGAffineTransform(scaleX: -1, y: 1)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -48,7 +51,7 @@ class ViewController: UIViewController {
     }
     
     private func setupSession() {
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front) else {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back) else {
             fatalError("Capture device not available")
         }
         guard let input = try? AVCaptureDeviceInput(device: device) else {
@@ -83,16 +86,41 @@ class ViewController: UIViewController {
     }
     
     private func handlePrediction(request: VNRequest, error: Error?) {
-        guard let observations = request.results as? [VNCoreMLFeatureValueObservation] else {
-            fatalError("unexpected result type from VNCoreMLRequest")
+//        guard let observations = request.results as? [VNCoreMLFeatureValueObservation] else {
+//            fatalError("unexpected result type from VNCoreMLRequest")
+//        }
+//        if let multiArray: MLMultiArray = observations[1].featureValue.multiArrayValue {
+//            let image = maskToRGBA(maskArray: MultiArray<Double>(multiArray), rgba: (255, 255, 0, 100))
+//            DispatchQueue.main.async { [weak self] in
+//                self?.predictionView.image = image
+//            }
+//        }
+        
+        let fps_double = self.measureFPS();
+        DispatchQueue.main.async{
+            self.fps.text = String(format: "%.2f FPS", fps_double)
         }
-        if let multiArray: MLMultiArray = observations[0].featureValue.multiArrayValue {
-            let image = maskToRGBA(maskArray: MultiArray<Double>(multiArray), rgba: (255, 255, 0, 100))
-            DispatchQueue.main.async { [weak self] in
-                self?.predictionView.image = image
-            }
-        }
+        
+        
     }
+    
+    
+    var framesDone = 0
+    var frameCapturingStartTime = CACurrentMediaTime()
+    let semaphore = DispatchSemaphore(value: 2)
+    
+    func measureFPS() -> Double {
+        // Measure how many frames were actually delivered per second.
+        framesDone += 1
+        let frameCapturingElapsed = CACurrentMediaTime() - frameCapturingStartTime
+        let currentFPSDelivered = Double(framesDone) / frameCapturingElapsed
+        if frameCapturingElapsed > 1 {
+            framesDone = 0
+            frameCapturingStartTime = CACurrentMediaTime()
+        }
+        return currentFPSDelivered
+    }
+    
     
 }
 
@@ -109,12 +137,14 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             requestOptions = [.cameraIntrinsics: cameraIntrinsicData]
         }
         
+        let timer = Debug.Timer()
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: requestOptions)
         do {
             try handler.perform([predictionRequest])
         } catch {
             print(error)
         }
+        let inference_time = timer.end()
         // each prediction is now attached to the request
         // obtain model result
         guard let observations = predictionRequest.results as? [VNCoreMLFeatureValueObservation] else {
@@ -123,7 +153,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         // convert to MLMultiArray and then convert to UIImage
         var mask: UIImage = UIImage()
-        if let multiArray: MLMultiArray = observations[0].featureValue.multiArrayValue {
+        if let multiArray: MLMultiArray = observations[1].featureValue.multiArrayValue {
             mask = maskToRGBA(maskArray: MultiArray<Double>(multiArray), rgba: (255, 255, 0, 100))!
         }
         
@@ -133,6 +163,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         DispatchQueue.main.async { [weak self] in
             //                self?.cameraPreview.image = image
             self?.predictionView.image = image
+//            self?.fps.text = String(format: "%.2f FPS", inference_time)
         }
     }
         
@@ -207,7 +238,7 @@ func mergeMaskAndBackground(mask: UIImage, background: CVPixelBuffer, size: Int)
     return newImage
 }
     
-    
+
 func maskToRGBA(maskArray: MultiArray<Double>,
                 rgba: (r: Double, g: Double, b: Double, a: Double)) -> UIImage? {
     let height = maskArray.shape[1]
@@ -218,10 +249,14 @@ func maskToRGBA(maskArray: MultiArray<Double>,
         for w in 0..<width {
             let offset = h * width * 4 + w * 4
             let val = maskArray[0, h, w]
-            bytes[offset + 0] = (val * rgba.r).toUInt8
-            bytes[offset + 1] = (val * rgba.g).toUInt8
-            bytes[offset + 2] = (val * rgba.b).toUInt8
-            bytes[offset + 3] = (val * rgba.a).toUInt8
+//            bytes[offset + 0] = (val * rgba.r).toUInt8
+//            bytes[offset + 1] = (val * rgba.g).toUInt8
+//            bytes[offset + 2] = (val * rgba.b).toUInt8
+//            bytes[offset + 3] = (val * rgba.a).toUInt8
+            bytes[offset + 0] = (0).toUInt8
+            bytes[offset + 1] = (0).toUInt8
+            bytes[offset + 2] = (0).toUInt8
+            bytes[offset + 3] = (val*255).toUInt8
         }
     }
     
@@ -230,4 +265,15 @@ func maskToRGBA(maskArray: MultiArray<Double>,
                                  bytesPerRow: width * 4,
                                  colorSpace: CGColorSpaceCreateDeviceRGB(),
                                  alphaInfo: .premultipliedLast)
+}
+
+struct Debug {
+    struct Timer {
+        let start = DispatchTime.now().uptimeNanoseconds
+        func end() -> Double {
+            let end = DispatchTime.now().uptimeNanoseconds
+            let diff = Double(end - start) / 1000000
+            return diff
+        }
+    }
 }

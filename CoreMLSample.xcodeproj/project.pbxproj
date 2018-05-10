@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F707D7220A410AE00A28742 /* sfm_graph.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4F707D7120A410AE00A28742 /* sfm_graph.mlmodel */; };
 		A415CAB01EEA437900983607 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A415CAAF1EEA437900983607 /* AppDelegate.swift */; };
 		A415CAB21EEA437900983607 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A415CAB11EEA437900983607 /* ViewController.swift */; };
 		A415CABA1EEA437900983607 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A415CAB81EEA437900983607 /* LaunchScreen.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4F707D7120A410AE00A28742 /* sfm_graph.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = sfm_graph.mlmodel; sourceTree = "<group>"; };
 		A415CAAC1EEA437900983607 /* CoreMLSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreMLSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A415CAAF1EEA437900983607 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A415CAB11EEA437900983607 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			children = (
 				E94B3DF61FC27D3F00207FF4 /* Extensions */,
 				E96454671FBD4E0D00A07635 /* mu_224_050_best2.mlmodel */,
+				4F707D7120A410AE00A28742 /* sfm_graph.mlmodel */,
 				A415CAAF1EEA437900983607 /* AppDelegate.swift */,
 				A415CAB11EEA437900983607 /* ViewController.swift */,
 				E94B3DF41FC27C9700207FF4 /* CameraPreviewView.swift */,
@@ -194,6 +197,7 @@
 				A415CAB21EEA437900983607 /* ViewController.swift in Sources */,
 				E9D4CF8F1FBC15D100C4D470 /* Array.swift in Sources */,
 				E9D4CF911FBC15D900C4D470 /* CVPixelBuffer+Helpers.swift in Sources */,
+				4F707D7220A410AE00A28742 /* sfm_graph.mlmodel in Sources */,
 				E94B3DF51FC27C9800207FF4 /* CameraPreviewView.swift in Sources */,
 				A415CAB01EEA437900983607 /* AppDelegate.swift in Sources */,
 				E9D4CF8E1FBC15CD00C4D470 /* UIImage+CVPixelBuffer.swift in Sources */,
@@ -326,11 +330,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = H4CR2L3EVK;
+				DEVELOPMENT_TEAM = GMLH8PF6LB;
 				INFOPLIST_FILE = "$(SRCROOT)/CoreMLSample/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yulingtianxia.CoreMLSimple-tranhv";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.xuyithu.CoreMLSimple-tranhv";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
@@ -342,11 +346,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = H4CR2L3EVK;
+				DEVELOPMENT_TEAM = GMLH8PF6LB;
 				INFOPLIST_FILE = "$(SRCROOT)/CoreMLSample/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yulingtianxia.CoreMLSimple-tranhv";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.xuyithu.CoreMLSimple-tranhv";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
